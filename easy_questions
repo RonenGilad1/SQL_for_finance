@@ -1,0 +1,41 @@
+# 1) Write a query to return employee full name and salary for employees with salary bigger or equals to 7000 and smaller or equals to 16000 : 
+
+select first_name,last_name, CONCAT(first_name, ' ', last_name) as employee_full_name, salary 
+from employees
+where salary between 7000 and 16000 ;
+
+2) Write a query to return employee_id and employee full name of all managers :
+
+select employee_id, first_name, last_name , CONCAT(first_name, ' ', last_name) as employee_full_name
+from employees
+where employee_id in ( select distinct manager_id from employees) ; 
+
+3) Write a query to return all employees that relate to at least one project:
+
+select a.employee_id, first_name, last_name 
+from employees a join employee_project b on a.employee_id = bemployee_id ; 
+
+### Note: because using an inner join there is no need for more filtering 
+
+4)Write a query to return duplicate rows in employee_project table:
+select employee_id , project_id , count(employee_id) as as number_of_Duplicates
+from employee_project 
+group by employee_id , project_id
+having count(employee_id) > 1 ;
+
+5)Write a query to return the number of new employees by year : 
+
+select year(start_date) as start_year , count( distinct employee_id) as number_of_new_employees
+from employees
+group by year(start_date) ;
+
+6)Write a query to return employee_id, employee full name, project_name for employees that relate for more than one project: 
+
+select a.employee_id , CONCAT(first_name, ' ', last_name) as employee_full_name , c.project_name 
+from employees a join employee_project b on a.employee_id = bemployee_id
+		join employee_project c on c.project_id = b.project_id
+where a.employee_id in ( select employee_id
+			 from employee_project 
+			 group by employee_id 
+			 having count(distinct project_id) > 1 ) 
+order by a.employee_id ; 
